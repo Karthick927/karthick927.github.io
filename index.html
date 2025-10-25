@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"> <!-- Default to dark theme -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karthick | Software/Data Portfolio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind theme -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Enable dark mode based on the 'dark' class on the html tag
+            theme: {
+                extend: {
+                    colors: {
+                        // Base Dark Theme Colors
+                        'primary-accent': 'var(--color-primary-accent)', // Sky Blue/Navy
+                        'secondary-accent': 'var(--color-secondary-accent)', // Green/Orange
+                        'dark-bg': 'var(--color-dark-bg)', // Deep Dark Gray/White
+                        'card-bg': 'var(--color-card-bg)', // Dark Card/Light Card
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ------------------ THEME VARIABLES ------------------ */
+        /* Dark Theme Variables (Default) */
+        :root {
+            --color-primary-accent: #38bdf8; /* Sky Blue */
+            --color-secondary-accent: #4ade80; /* Green */
+            --color-dark-bg: #121212;
+            --color-card-bg: #1e1e1e;
+            --color-text-main: #e5e7eb; /* Gray 200 */
+            --color-text-secondary: #9ca3af; /* Gray 400 */
+        }
+
+        /* Light Theme Variables (When .light class is present) */
+        .light {
+            --color-primary-accent: #1d4ed8; /* Blue 700 */
+            --color-secondary-accent: #f97316; /* Orange 500 */
+            --color-dark-bg: #f9fafb; /* White-ish */
+            --color-card-bg: #ffffff;
+            --color-text-main: #1f2937; /* Gray 800 */
+            --color-text-secondary: #4b5563; /* Gray 600 */
+        }
+
+        /* ------------------ GENERAL STYLES AND TRANSITIONS ------------------ */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Smooth transition for theme change */
+        body {
+            background-color: var(--color-dark-bg);
+            color: var(--color-text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Dynamic Navbar Scroll Effect */
+        .scrolled-nav {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        .light .scrolled-nav {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ------------------ ANIMATION KEYFRAMES ------------------ */
+
+        /* 1. Fade and Slide Up (Used for sections) */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-on-load {
+            opacity: 0;
+            animation: fadeSlideUp 0.7s ease-out forwards;
+            /* PERFORMANCE OPTIMIZATION */
+            will-change: transform, opacity;
+        }
+
+        /* 2. Neon Flicker (Used for the main H1 title) - Adjusted for performance */
+        @keyframes flicker {
+            0%, 25% { text-shadow: 0 0 5px var(--color-primary-accent), 0 0 10px rgba(56, 189, 248, 0.3); }
+            50% { text-shadow: none; }
+            75% { text-shadow: 0 0 5px var(--color-primary-accent), 0 0 15px rgba(56, 189, 248, 0.5); }
+            100% { text-shadow: 0 0 10px var(--color-primary-accent), 0 0 20px rgba(56, 189, 248, 0.4); }
+        }
+        .neon-flicker {
+            animation: flicker 2s infinite alternate; /* Slower animation cycle */
+        }
+        .light .neon-flicker {
+            animation: none; /* Disable flicker in light mode */
+            text-shadow: none;
+        }
+
+        /* 3. Avatar Pulse Ring */
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+        .avatar-ring {
+            animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        /* 4. Animated Separator Line on Hover */
+        .section-header {
+            transition: all 0.3s ease;
+            display: inline-block; /* Crucial for centering */
+        }
+        .section-header > h2 {
+            position: relative;
+        }
+        .section-header > h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 4px;
+            background-color: var(--color-primary-accent);
+            box-shadow: 0 0 8px var(--color-primary-accent), 0 0 15px var(--color-primary-accent);
+            transition: width 0.4s ease-out;
+            border-radius: 9999px;
+        }
+        .section-header:hover > h2::after {
+            width: 100%;
+        }
+
+        /* 5. Download Button Styling */
+        .download-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 5px 20px rgba(74, 218, 128, 0.4);
+            background-color: var(--color-secondary-accent);
+            color: var(--color-dark-bg);
+        }
+        .download-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(74, 218, 128, 0.8);
+        }
+        .light .download-btn {
+             box-shadow: 0 5px 20px rgba(249, 115, 22, 0.5); /* Orange shadow in light mode */
+             background-color: var(--color-secondary-accent);
+             color: white;
+        }
+        .light .download-btn:hover {
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.9);
+        }
+
+        /* 6. Card Hover Glow - Added will-change for performance */
+        .project-card {
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #333;
+            background-color: var(--color-card-bg);
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-primary-accent);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.5), 0 10px 35px rgba(0, 0, 0, 0.8);
+            /* PERFORMANCE OPTIMIZATION */
+            will-change: transform, box-shadow;
+        }
+        .light .project-card {
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .light .project-card:hover {
+            border-color: var(--color-primary-accent);
+            box-shadow: 0 8px 12px -5px rgba(29, 78, 216, 0.3);
+        }
+
+        /* 7. Skill Pill Hover Glow */
+        .skill-pill:hover {
+             box-shadow: 0 0 10px var(--color-secondary-accent);
+        }
+        .light .skill-pill {
+            background-color: #e5e7eb; /* Light gray */
+            color: var(--color-text-main);
+        }
+    </style>
+</head>
+
+<body class="bg-dark-bg text-gray-200 font-sans antialiased">
+
+    <!-- JavaScript for Theme Toggle and Scroll Animation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const html = document.documentElement;
+            const nav = document.querySelector('nav');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+
+            // Check if themeToggleBtn exists before proceeding
+            if (!themeToggleBtn) {
+                console.error("Theme toggle button not found. Cannot initialize theme functionality.");
+                return;
+            }
+
+            function updateThemeIcon(isDark) {
+                themeToggleBtn.innerHTML = isDark
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>' // Moon icon
+                    : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'; // Sun icon
+            }
+
+            function toggleTheme() {
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.setItem('theme', 'light');
+                    updateThemeIcon(false);
+                } else {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateThemeIcon(true);
+                }
+            }
+            
+            // Attach the toggle function to the button
+            themeToggleBtn.onclick = toggleTheme;
+
+            // Apply theme on load
+            if (localStorage.getItem('theme') === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                // Default to dark if not set or set to dark
+                html.classList.add('dark');
+            }
+            updateThemeIcon(html.classList.contains('dark'));
+
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled-nav');
+                } else {
+                    nav.classList.remove('scrolled-nav');
+                }
+            });
+        });
+    </script>
+
+
+    <!-- Navbar/Navigation -->
+    <nav class="sticky top-0 z-40 bg-dark-bg/95 backdrop-blur-sm shadow-2xl shadow-black/50 border-b border-gray-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center transition-all duration-300">
+            <a href="#" class="text-xl font-extrabold text-primary-accent hover:text-white transition duration-150">Karthick</a>
+            <div class="flex items-center space-x-4">
+                <a href="#projects" class="text-gray-400 hover:text-primary-accent transition duration-150 ease-in-out hidden sm:inline-block">Projects</a>
+                <a href="#achievements" class="text-gray-400 hover:text-primary-accent transition duration-150 ease-in-out hidden sm:inline-block">Achievements</a>
+                <a href="#skills" class="text-gray-400 hover:text-primary-accent transition duration-150 ease-in-out hidden sm:inline-block">Skills</a>
+                <a href="#experience" class="text-gray-400 hover:text-primary-accent transition duration-150 ease-in-out hidden sm:inline-block">Experience</a>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-full text-primary-accent hover:bg-primary-accent/10 transition duration-300">
+                    <!-- Icon updated by JavaScript -->
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-28">
+
+        <!-- 1. Hero Section -->
+        <header class="text-center pt-8 pb-16 animate-on-load" style="animation-delay: 0.1s;">
+            <div class="inline-block relative p-3 rounded-full bg-primary-accent/10 avatar-ring">
+                <!-- Simple Avatar Placeholder using SVG for consistency -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 sm:w-36 sm:h-36 text-primary-accent" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.93 0 3.5 1.57 3.5 3.5S13.93 12 12 12s-3.5-1.57-3.5-3.5S10.07 5 12 5zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
+            </div>
+            <h1 class="text-5xl sm:text-7xl font-extrabold text-white mt-4 tracking-tight neon-flicker">
+                KARTHICK
+            </h1>
+            <p class="text-xl sm:text-2xl text-primary-accent mt-2 font-extralight uppercase tracking-widest">
+                Entry-Level Graduate | Software/Data
+            </p>
+            <p class="mt-8 max-w-2xl mx-auto text-gray-400 border-b border-primary-accent/20 pb-8">
+                A highly motivated Computer Science graduate eager to apply strong foundational knowledge in **Python, MySQL, and Linux**. Ready to leverage technical skills developed through hands-on projects and internships to drive professional growth.
+            </p>
+
+            <!-- Social Links -->
+            <div class="mt-8 flex justify-center space-x-8">
+                <!-- Email -->
+                <a href="mailto:23g110karthick@gmail.com" target="_blank" class="text-gray-400 hover:text-secondary-accent transition duration-200 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </a>
+                <!-- LinkedIn Placeholder -->
+                <a href="https://www.linkedin.com/in/karthick000007/" target="_blank" class="text-gray-400 hover:text-secondary-accent transition duration-200 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <!-- GitHub Placeholder -->
+                <a href="https://github.com/Karthick927" target="_blank" class="text-gray-400 hover:text-secondary-accent transition duration-200 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.01-.39-3.32 1.3-1.94-.53-4-.53-5.94 0C6.31 2.61 5.3 3 5.3 3a5.07 5.07 0 0 0-.09 1.77A5.44 5.44 0 0 0 2 12.39c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                </a>
+            </div>
+        </header>
+
+        <!-- 2. Projects Section -->
+        <section id="projects" class="animate-on-load" style="animation-delay: 0.3s;">
+            <div class="text-center mb-12 section-header">
+                <h2 class="text-4xl font-extrabold text-primary-accent inline-block pb-2">
+                    Featured Projects
+                </h2>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Project Card 1: MySQL Bank Application -->
+                <div class="project-card p-6 rounded-xl shadow-xl border border-gray-700/50">
+                    <h3 class="text-xl font-bold text-primary-accent mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        MySQL Bank Application
+                    </h3>
+                    <p class="text-gray-400 mb-4 text-sm">
+                        A console-based banking system using **Python** and `mysql.connector` to ensure data persistence with robust CRUD operations.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs mb-4">
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Python</span>
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">MySQL</span>
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">CRUD</span>
+                    </div>
+                    <a href="https://github.com/Karthick927/MySQL-Bank-Application.git" target="_blank" class="text-secondary-accent hover:text-primary-accent flex items-center transition duration-200 font-semibold transform hover:scale-[1.02]">
+                        View Code
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+
+                <!-- Project Card 2: Expense Tracker -->
+                <div class="project-card p-6 rounded-xl shadow-xl border border-gray-700/50">
+                    <h3 class="text-xl font-bold text-primary-accent mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15c.7-3 1.2-7.2-.2-9.2a2 2 0 0 0-2.8-.2c-1.3 1-2.4 2.5-4.4 3.7-2.1 1.2-4.8 1.4-7.2.4l-2-1"/><path d="M3 11c.3 2.1.7 4.1 1.6 5.3a2 2 0 0 0 2.8.2c1.3-1 2.4-2.5 4.4-3.7 2.1-1.2 4.8-1.4 7.2-.4l2 1"/></svg>
+                        Expense Tracker
+                    </h3>
+                    <p class="text-gray-400 mb-4 text-sm">
+                        A simple Python application focused on implementing core **Object-Oriented Programming (OOP)** concepts like classes, objects, and methods.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs mb-4">
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Python</span>
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">OOP</span>
+                    </div>
+                    <a href="https://github.com/Karthick927/expense-tracker.git" target="_blank" class="text-secondary-accent hover:text-primary-accent flex items-center transition duration-200 font-semibold transform hover:scale-[1.02]">
+                        View Code
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+
+                <!-- Project Card 3: Web Scraping -->
+                <div class="project-card p-6 rounded-xl shadow-xl border border-gray-700/50">
+                    <h3 class="text-xl font-bold text-primary-accent mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8z"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="4.22" y1="4.22" x2="6.36" y2="6.36"/><line x1="20" y1="12" x2="17" y2="12"/><line x1="4" y1="12" x2="1" y2="12"/></svg>
+                        WebTextExtractor
+                    </h3>
+                    <p class="text-gray-400 mb-4 text-sm">
+                        A Python script developed to efficiently extract text from any website, demonstrating web scraping fundamentals.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs mb-4">
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Python</span>
+                        <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Web Scraping</span>
+                    </div>
+                    <a href="https://github.com/Karthick927/WebTextExtractor.git" target="_blank" class="text-secondary-accent hover:text-primary-accent flex items-center transition duration-200 font-semibold transform hover:scale-[1.02]">
+                        View Code
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. New Achievements Section -->
+        <section id="achievements" class="animate-on-load" style="animation-delay: 0.5s;">
+            <div class="text-center mb-12 section-header">
+                <h2 class="text-4xl font-extrabold text-primary-accent inline-block pb-2">
+                    Key Achievements
+                </h2>
+            </div>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                <!-- Achievement 1 -->
+                <div class="project-card p-6 rounded-xl border border-gray-700/50 shadow-xl border-l-4 border-secondary-accent">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-2 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        First Prize: IoT Intern Overall Performance
+                    </h3>
+                    <p class="text-gray-400">
+                        Awarded the top prize for overall performance during the IoT Internship at Titan Leap Center (Naandi Foundation), recognizing outstanding contribution and resource optimization.
+                    </p>
+                </div>
+                <!-- Achievement 2 -->
+                <div class="project-card p-6 rounded-xl border border-gray-700/50 shadow-xl border-l-4 border-secondary-accent">
+                    <h3 class="text-xl font-bold text-secondary-accent mb-2 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                        First Prize: AI Agent Creation Event
+                    </h3>
+                    <p class="text-gray-400">
+                        Secured the first-place award in the competitive AI Agent Creation event, demonstrating advanced proficiency in AI development and rapid prototyping.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Skills Section -->
+        <section id="skills" class="animate-on-load" style="animation-delay: 0.7s;">
+            <div class="text-center mb-12 section-header">
+                <h2 class="text-4xl font-extrabold text-primary-accent inline-block pb-2">
+                    Technical Skills
+                </h2>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="grid sm:grid-cols-3 gap-6">
+                    <!-- Programming & Tools -->
+                    <div class="project-card p-6 rounded-xl border border-gray-700/50 shadow-lg">
+                        <h3 class="text-lg font-semibold text-primary-accent mb-4 flex items-center">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                             Core Technologies
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Python</span>
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">MySQL</span>
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Excel</span>
+                        </div>
+                    </div>
+
+                    <!-- Version Control & OS -->
+                    <div class="project-card p-6 rounded-xl border border-gray-700/50 shadow-lg">
+                        <h3 class="text-lg font-semibold text-primary-accent mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M17.43 5.43l-3.53 3.53M6.57 5.43l3.53 3.53"/></svg>
+                            Tools & Systems
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Git</span>
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">GitHub</span>
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Linux</span>
+                        </div>
+                    </div>
+
+                    <!-- Other Skills -->
+                    <div class="project-card p-6 rounded-xl border border-gray-700/50 shadow-lg">
+                        <h3 class="text-lg font-semibold text-primary-accent mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Soft Skills
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-gray-800 text-gray-200 px-3 py-1 rounded-full text-sm hover:bg-secondary-accent hover:text-dark-bg transition duration-200 transform hover:scale-105">Teamwork</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Experience/Internship Section -->
+        <section id="experience" class="animate-on-load" style="animation-delay: 0.9s;">
+            <div class="text-center mb-12 section-header">
+                <h2 class="text-4xl font-extrabold text-primary-accent inline-block pb-2">
+                    Internship Experience
+                </h2>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-8">
+                <!-- Internship 1: Data Analysis -->
+                <div class="project-card p-6 rounded-xl border-l-4 border-secondary-accent shadow-xl hover:shadow-2xl hover:shadow-secondary-accent/20 transition duration-300">
+                    <div class="flex justify-between items-start flex-wrap">
+                        <h3 class="text-xl font-bold text-white">Data Analysis Intern</h3>
+                        <span class="text-sm text-secondary-accent font-medium">Retech Solution</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">
+                        Focused on processing and transforming raw data sets to generate actionable business insights and reports.
+                    </p>
+                </div>
+                <!-- Internship 2: IoT -->
+                <div class="project-card p-6 rounded-xl border-l-4 border-secondary-accent shadow-xl hover:shadow-2xl hover:shadow-secondary-accent/20 transition duration-300">
+                    <div class="flex justify-between items-start flex-wrap">
+                        <h3 class="text-xl font-bold text-white">IoT Intern</h3>
+                        <span class="text-sm text-secondary-accent font-medium">Titan Leap Center (Naandi Foundation)</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">
+                        Contributed to IoT projects focused on monitoring and optimizing resource usage and performance.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Education Section (Simple) -->
+        <section id="education" class="animate-on-load" style="animation-delay: 1.1s;">
+            <div class="text-center mb-12 section-header">
+                <h2 class="text-4xl font-extrabold text-primary-accent inline-block pb-2">
+                    Education
+                </h2>
+            </div>
+            <div class="max-w-2xl mx-auto space-y-4 text-center text-lg text-gray-300 p-6 project-card rounded-xl shadow-2xl border border-primary-accent/30">
+                <p><strong>BSc - Computer Science</strong> at Agruchand Manmull College (2023-2026)</p>
+                <p class="text-gray-400">Higher Secondary Education (7th to 12th std) at K C Sankarlinger Nadar Higher Secondary School (2017-2023)</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Fixed Download Resume Button -->
+    <a href="Resume (8) (1).pdf" download="Karthick_Resume.pdf" class="download-btn font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Resume
+    </a>
+
+    <!-- Footer -->
+    <footer class="bg-dark-bg border-t border-gray-800 py-6 mt-16 text-center text-gray-600">
+        <p>&copy; 2025 Karthick. All rights reserved. <span class="text-primary-accent">Code is poetry.</span></p>
+    </footer>
+
+</body>
+</html>
